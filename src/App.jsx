@@ -22,6 +22,9 @@ function embaralhar(lista) {
   return a
 }
 
+// Página só de ranking: qualquer endereço terminado em /ranking.
+const SO_RANKING = /\/ranking\/?$/.test(window.location.pathname)
+
 function horaDe(d) {
   const p = (n) => String(n).padStart(2, '0')
   return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
@@ -162,7 +165,26 @@ export default function App() {
     return () => window.removeEventListener('beforeunload', aviso)
   }, [tela])
 
+  // Na página /ranking, redesenha a cada 30 s para "Jogando…" virar "Não terminou".
+  const [, setTique] = useState(0)
+  useEffect(() => {
+    if (!SO_RANKING) return
+    const t = setInterval(() => setTique((n) => n + 1), 30000)
+    return () => clearInterval(t)
+  }, [])
+
   const ocupados = new Set((lista ?? []).map((g) => g.id))
+
+  if (SO_RANKING) {
+    return (
+      <main className="app so-ranking">
+        <h1>{TITULO}</h1>
+        <p className="sub">{SUBTITULO}</p>
+        {aviso && <p className="alerta">{aviso}</p>}
+        <Ranking lista={lista} />
+      </main>
+    )
+  }
 
   async function comecar(e) {
     e.preventDefault()

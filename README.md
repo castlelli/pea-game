@@ -26,6 +26,7 @@ npm run build      # gera a pasta dist
 - Quem sai ou recarrega no meio perde a vez: o grupo continua reservado e aparece como "Jogando…".
   Depois de `MINUTOS_ABANDONO` (20 min), passa a aparecer como "Não terminou".
 - No fim, a nota é gravada uma única vez, com a hora do servidor. O desempate usa essa hora.
+- **Só o ranking:** abra `/ranking` (por exemplo, <https://pea3100-g7.web.app/ranking>). Essa página não tem jogo nem links e se atualiza sozinha.
 - Para mudar os grupos, edite `GRUPOS` em `src/data.js` e a lista em `firestore.rules`.
 
 ## Testes e reset
