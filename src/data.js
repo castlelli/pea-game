@@ -77,8 +77,12 @@ const FICTICIO = 'Modelo fictício criado para o jogo.'
 export const MINIGAME = [
   {
     titulo: 'Escolha o módulo',
-    missao:
-      'Atingir pelo menos 1.350 Wp, com certificação Inmetro e o menor custo total.',
+    objetivo: 'Escolha o módulo fotovoltaico do sistema.',
+    criterios: [
+      'Potência total de pelo menos 1.350 Wp',
+      'Certificação Inmetro',
+      'Menor custo total entre os que atendem',
+    ],
     cards: [
       {
         nome: 'Canadian Solar CS6W-550MS',
@@ -147,8 +151,9 @@ export const MINIGAME = [
   },
   {
     titulo: 'Escolha o tipo de inversor',
-    missao:
-      'Usar os 3 módulos da etapa 1 (Vmp de 41,7 V cada) com tensão de entrada de pelo menos 48 V.',
+    objetivo: 'Escolha como ligar os 3 módulos da etapa 1 ao inversor.',
+    criterios: ['Tensão de entrada de pelo menos 48 V'],
+    dado: 'Cada módulo tem Vmp de 41,7 V.',
     cards: [
       {
         nome: 'Inversor string',
@@ -183,8 +188,13 @@ export const MINIGAME = [
   },
   {
     titulo: 'Escolha o modelo do inversor',
-    missao:
-      'O inversor string de menor preço com: potência ≥ 1,98 kW (1,2 × 1,65 kWp), corrente máx. de entrada acima de 13,2 A e MPPT que cubra de 108 V a 125,1 V.',
+    objetivo: 'Escolha o modelo do inversor string.',
+    criterios: [
+      'Potência de pelo menos 1,98 kW (1,2 × 1,65 kWp)',
+      'Corrente máx. de entrada acima de 13,2 A',
+      'Faixa de MPPT que cubra de 108 V a 125,1 V',
+      'Menor preço entre os que atendem',
+    ],
     cards: [
       {
         nome: 'Intelbras EGT 2500 PRO',

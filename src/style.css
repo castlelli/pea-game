@@ -183,11 +183,78 @@ input {
 }
 
 .missao {
-  background: #fff8e6;
-  border-left: 6px solid #7a2e00;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 14px;
+  background: #3d1700;
+  color: #fff8e6;
+  border: 4px solid #ffe27a;
+  border-radius: 20px;
+  padding: 16px 18px;
+  margin: 8px 0 12px;
+  box-shadow: 0 6px 0 #7a2e00;
+  animation: entrar 0.35s ease;
+}
+
+.missao p {
+  margin: 0;
+}
+
+.missao-rotulo {
+  display: inline-block;
+  background: #ffe27a;
+  color: #3d1700;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+
+.missao-objetivo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 10px 0 12px !important;
+}
+
+.missao-req {
+  font-weight: 700;
+  color: #ffe27a;
+}
+
+.missao ul {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.missao li {
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 6px 0 6px 30px;
+  position: relative;
+  border-top: 1px solid rgba(255, 226, 122, 0.25);
+}
+
+.missao li::before {
+  content: '✓';
+  position: absolute;
+  left: 4px;
+  color: #ffe27a;
+  font-weight: 900;
+}
+
+.missao-dado {
+  margin-top: 10px !important;
+  font-size: 0.95rem;
+  background: rgba(255, 226, 122, 0.15);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.instrucao {
+  text-align: center;
+  font-weight: 800;
+  margin: 0 0 12px;
 }
 
 .card {

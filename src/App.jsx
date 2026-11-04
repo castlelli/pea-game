@@ -186,10 +186,18 @@ export default function App() {
     return (
       <main className="app">
         <Progresso rotulo="Etapa" atual={idx + 1} total={rodada.mini.length} />
-        <h2>{etapa.titulo}</h2>
-        <div className="missao">
-          <strong>🎯 Missão:</strong> {etapa.missao}
-        </div>
+        <section className="missao">
+          <p className="missao-rotulo">🎯 Missão {idx + 1}</p>
+          <p className="missao-objetivo">{etapa.objetivo}</p>
+          <p className="missao-req">Requisitos:</p>
+          <ul>
+            {etapa.criterios.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+          {etapa.dado && <p className="missao-dado">ℹ️ {etapa.dado}</p>}
+        </section>
+        <p className="instrucao">👇 Toque no card que cumpre a missão</p>
         <div className="cards">
           {etapa.cards.map((c, i) => {
             let cls = 'card'
