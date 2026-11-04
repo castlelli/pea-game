@@ -489,3 +489,176 @@ dd {
     transform: rotate(360deg);
   }
 }
+
+.label {
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.grupos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.grupo {
+  font: inherit;
+  color: #3d1700;
+  background: #fff8e6;
+  border: 3px solid #7a2e00;
+  border-radius: 14px;
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #e0892f;
+}
+
+.grupo strong {
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.grupo small {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.grupo.ativo {
+  background: #3d1700;
+  color: #ffe27a;
+  box-shadow: 0 4px 0 #1f0b00;
+}
+
+.grupo:disabled {
+  cursor: default;
+  background: #e9d9c4;
+  border-color: #b89a7a;
+  color: #8a6d50;
+  box-shadow: none;
+}
+
+.grupo:disabled strong {
+  text-decoration: line-through;
+}
+
+.alerta {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fde2df;
+  border: 2px solid #b3261e;
+  color: #7a120c;
+  font-weight: 700;
+}
+
+.placar-grupo {
+  display: inline-block;
+  background: #3d1700;
+  color: #ffe27a;
+  font-weight: 900;
+  border-radius: 99px;
+  padding: 4px 14px;
+}
+
+.salvo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.salvo.ok {
+  color: #1b7a2e;
+}
+
+.salvo.erro {
+  color: #b3261e;
+}
+
+.link {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ranking {
+  background: #fff8e6;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 6px 0 #e0892f;
+  margin: 16px 0;
+}
+
+.ranking h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: #7a2e00;
+}
+
+.ranking ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ranking li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-top: 1px dashed #e8c48f;
+}
+
+.ranking li.meu {
+  background: #ffe27a;
+  border-radius: 12px;
+  border-top-color: transparent;
+}
+
+.ranking li.pendente {
+  color: #8a6d50;
+}
+
+.ranking .pos {
+  width: 2.2em;
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.ranking .quem {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ranking .quem small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking .nota {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.ranking .nota small {
+  font-size: 0.8rem;
+  font-weight: 700;
+}

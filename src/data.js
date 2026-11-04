@@ -246,6 +246,16 @@ export const MINIGAME = [
   },
 ]
 
+// Grupos que podem jogar (o 07 apresenta). Se mudar, atualize também firestore.rules.
+export const GRUPOS = ['01', '02', '03', '04', '05', '06', '08']
+
+// Sala do ranking no Firestore. Use 'teste' (ou 'teste2', 'teste3'...) para testar
+// e troque para 'aula' antes de publicar a versão da aula.
+export const SALA = 'teste'
+
+// Depois deste tempo sem terminar, um grupo "jogando" aparece como "não terminou".
+export const MINUTOS_ABANDONO = 20
+
 export const TOTAL = QUIZ.length + MINIGAME.length
 export const REGRA =
   'Maior nota vence; em caso de empate, vence quem acabou antes.'

@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Um documento por grupo em salas/{sala}/grupos/{grupo}.
+// - Criar: só se ainda não existe (cada grupo joga uma vez), com status "jogando".
+// - Atualizar: só uma vez, de "jogando" para "fim", com a nota de 0 a 8.
+// - Ninguém apaga pelo app; o reset é feito no console.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /salas/{sala}/grupos/{grupo} {
+      allow read: if true;
+
+      allow create: if sala.matches('aula|teste[a-z0-9]*')
+        && grupo in ['01', '02', '03', '04', '05', '06', '08']
+        && request.resource.data.keys().hasOnly(['nome', 'status', 'pontos', 'inicio'])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() <= 40
+        && request.resource.data.status == 'jogando'
+        && request.resource.data.pontos == 0
+        && request.resource.data.inicio == request.time;
+
+      allow update: if resource.data.status == 'jogando'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'pontos', 'fim'])
+        && request.resource.data.status == 'fim'
+        && request.resource.data.pontos is int
+        && request.resource.data.pontos >= 0
+        && request.resource.data.pontos <= 8
+        && request.resource.data.fim == request.time;
+
+      allow delete: if false;
+    }
+  }
+}

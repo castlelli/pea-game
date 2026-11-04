@@ -7,8 +7,11 @@ import {
   MINIGAME,
   TOTAL,
   REGRA,
+  GRUPOS,
+  MINUTOS_ABANDONO,
 } from './data.js'
 import { Icon, SunHero, TrophyHero } from './icons.jsx'
+import { configurado, ouvirGrupos, reservarGrupo, finalizar } from './db.js'
 
 function embaralhar(lista) {
   const a = [...lista]
@@ -19,10 +22,70 @@ function embaralhar(lista) {
   return a
 }
 
-function horaAgora() {
-  const d = new Date()
+function horaDe(d) {
   const p = (n) => String(n).padStart(2, '0')
   return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
+}
+
+// Situação de um grupo que ainda não terminou.
+function situacao(g) {
+  if (!g) return 'livre'
+  if (g.status === 'fim') return 'fim'
+  const minutos = g.inicio ? (Date.now() - g.inicio.getTime()) / 60000 : 0
+  return minutos > MINUTOS_ABANDONO ? 'abandonou' : 'jogando'
+}
+
+const ROTULO = {
+  livre: 'Ainda não jogou',
+  jogando: 'Jogando…',
+  abandonou: 'Não terminou',
+}
+
+function Ranking({ lista, meuGrupo }) {
+  if (!lista) return <p className="regra">Carregando ranking…</p>
+  const porId = Object.fromEntries(lista.map((g) => [g.id, g]))
+  const terminados = lista
+    .filter((g) => g.status === 'fim' && GRUPOS.includes(g.id))
+    .sort((a, b) => b.pontos - a.pontos || a.fim - b.fim)
+  const outros = GRUPOS.filter((id) => porId[id]?.status !== 'fim')
+  return (
+    <section className="ranking">
+      <h2>
+        <Icon name="trophy" size={22} /> Ranking ao vivo
+      </h2>
+      <ol>
+        {terminados.map((g, i) => (
+          <li key={g.id} className={g.id === meuGrupo ? 'meu' : ''}>
+            <span className="pos">{i + 1}º</span>
+            <span className="quem">
+              <strong>Grupo {g.id}</strong>
+              <small>{g.nome}</small>
+            </span>
+            <span className="nota">
+              {g.pontos}/{TOTAL}
+              <small>{g.fim ? horaDe(g.fim) : '…'}</small>
+            </span>
+          </li>
+        ))}
+        {outros.map((id) => {
+          const s = situacao(porId[id])
+          return (
+            <li key={id} className={`pendente ${id === meuGrupo ? 'meu' : ''}`}>
+              <span className="pos">–</span>
+              <span className="quem">
+                <strong>Grupo {id}</strong>
+                {porId[id] && <small>{porId[id].nome}</small>}
+              </span>
+              <span className="nota">
+                <small>{ROTULO[s]}</small>
+              </span>
+            </li>
+          )
+        })}
+      </ol>
+      <p className="regra">{REGRA}</p>
+    </section>
+  )
 }
 
 function novaRodada() {
@@ -74,10 +137,51 @@ export default function App() {
   const [selecionado, setSelecionado] = useState(null)
   const [pontos, setPontos] = useState(0)
   const [hora, setHora] = useState('')
+  const [grupo, setGrupo] = useState(null)
+  const [lista, setLista] = useState(null)
+  const [aviso, setAviso] = useState('')
+  const [reservando, setReservando] = useState(false)
+  const [salvo, setSalvo] = useState('salvando')
 
-  function comecar(e) {
+  useEffect(
+    () =>
+      ouvirGrupos(setLista, () =>
+        setAviso('Sem conexão com o ranking. Verifique a internet e recarregue.')
+      ),
+    []
+  )
+
+  // Avisa antes de sair no meio do jogo: quem sai perde a vez do grupo.
+  useEffect(() => {
+    if (tela !== 'quiz' && tela !== 'mini') return
+    const aviso = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', aviso)
+    return () => window.removeEventListener('beforeunload', aviso)
+  }, [tela])
+
+  const ocupados = new Set((lista ?? []).map((g) => g.id))
+
+  async function comecar(e) {
     e.preventDefault()
-    if (!nome.trim()) return
+    if (!nome.trim() || !grupo || reservando) return
+    setAviso('')
+    setReservando(true)
+    try {
+      await reservarGrupo(grupo, nome.trim())
+    } catch (err) {
+      setReservando(false)
+      setAviso(
+        err.message === 'ocupado'
+          ? `O Grupo ${grupo} já jogou ou está jogando. Cada grupo joga uma vez.`
+          : 'Não foi possível reservar o grupo. Verifique a internet e tente de novo.'
+      )
+      setGrupo(null)
+      return
+    }
+    setReservando(false)
     setRodada(novaRodada())
     setIdx(0)
     setEscolha(null)
@@ -87,11 +191,25 @@ export default function App() {
     setTela('quiz')
   }
 
+  async function salvar(total) {
+    setSalvo('salvando')
+    try {
+      await finalizar(grupo, total)
+      setSalvo('ok')
+    } catch {
+      setSalvo('erro')
+    }
+  }
+
   function responder(i, certa) {
     if (escolha !== null) return
     setEscolha(i)
-    if (certa) setPontos((p) => p + 1)
-    if (tela === 'mini' && idx === rodada.mini.length - 1) setHora(horaAgora())
+    const novo = pontos + (certa ? 1 : 0)
+    setPontos(novo)
+    if (tela === 'mini' && idx === rodada.mini.length - 1) {
+      setHora(horaDe(new Date()))
+      salvar(novo)
+    }
   }
 
   function avancar() {
@@ -126,12 +244,51 @@ export default function App() {
             maxLength={40}
             required
           />
-          <button className="btn" disabled={!nome.trim()}>
-            Começar <Icon name="bolt" />
+          <span className="label">Seu grupo</span>
+          {!configurado ? (
+            <p className="alerta">
+              Firebase não configurado. Preencha src/firebase-config.js.
+            </p>
+          ) : !lista ? (
+            <p className="regra">Carregando grupos…</p>
+          ) : (
+            <div className="grupos" role="radiogroup" aria-label="Seu grupo">
+              {GRUPOS.map((id) => {
+                const usado = ocupados.has(id)
+                const s = situacao(lista.find((g) => g.id === id))
+                const rotulo = {
+                  fim: 'já jogou',
+                  jogando: 'jogando',
+                  abandonou: 'não terminou',
+                }[s]
+                return (
+                  <button
+                    type="button"
+                    key={id}
+                    role="radio"
+                    aria-checked={grupo === id}
+                    className={`grupo${grupo === id ? ' ativo' : ''}`}
+                    disabled={usado}
+                    onClick={() => setGrupo(id)}
+                  >
+                    <strong>{id}</strong>
+                    <small>{usado ? rotulo : grupo === id ? 'escolhido' : 'livre'}</small>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+          {aviso && <p className="alerta">{aviso}</p>}
+          <button
+            className="btn"
+            disabled={!nome.trim() || !grupo || ocupados.has(grupo) || reservando}
+          >
+            {reservando ? 'Reservando…' : 'Começar'} <Icon name="bolt" />
           </button>
         </form>
         <p className="regra">
-          {TOTAL} pontos no máximo. {REGRA}
+          Cada grupo joga uma única vez. Se sair ou recarregar a página no meio,
+          o grupo perde a vez. {TOTAL} pontos no máximo. {REGRA}
         </p>
       </main>
     )
@@ -293,20 +450,38 @@ export default function App() {
     )
   }
 
+  // Hora do servidor, quando já chegou; até lá, a do aparelho.
+  const meu = (lista ?? []).find((g) => g.id === grupo)
+  const horaFinal = meu?.status === 'fim' && meu.fim ? horaDe(meu.fim) : hora
   return (
     <main className="app fim">
       <TrophyHero />
       <h1>Missão cumprida!</h1>
       <div className="placar">
+        <p className="placar-grupo">Grupo {grupo}</p>
         <p className="placar-nome">{nome.trim()}</p>
         <p className="placar-nota">
           {pontos}/{TOTAL}
         </p>
-        <p className="placar-hora">Terminou às {hora}</p>
+        <p className="placar-hora">Terminou às {horaFinal}</p>
+        <p className={`salvo ${salvo}`}>
+          {salvo === 'ok' && (
+            <>
+              <Icon name="check" size={16} /> Resultado salvo no ranking
+            </>
+          )}
+          {salvo === 'salvando' && 'Salvando no ranking…'}
+          {salvo === 'erro' && (
+            <>
+              <Icon name="x" size={16} /> Não foi possível salvar.{' '}
+              <button className="link" onClick={() => salvar(pontos)}>
+                Tentar de novo
+              </button>
+            </>
+          )}
+        </p>
       </div>
-      <p className="regra">
-        Tire um print desta tela. {REGRA}
-      </p>
+      <Ranking lista={lista} meuGrupo={grupo} />
       <p className="sub">{SUBTITULO}</p>
     </main>
   )

@@ -26,6 +26,13 @@ const PATHS = {
     </>
   ),
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
+  trophy: (
+    <>
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+      <path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5" />
+      <path d="M12 14v4M8 20.5h8" />
+    </>
+  ),
 }
 
 export function Icon({ name, size = 20, className = '' }) {
