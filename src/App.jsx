@@ -188,8 +188,9 @@ export default function App() {
     const respondida = escolha !== null
     const escolhido = respondida ? etapa.cards[escolha] : null
     const correto = etapa.cards.find((c) => c.certa)
+    const comSelecao = !respondida && selecionado !== null
     return (
-      <main className="app">
+      <main className={`app${comSelecao ? ' com-selecao' : ''}`}>
         <Progresso rotulo="Etapa" atual={idx + 1} total={rodada.mini.length} />
         <section className="missao">
           <p className="missao-rotulo">
@@ -260,22 +261,18 @@ export default function App() {
             )
           })}
         </div>
-        {!respondida && (
+        {!respondida && selecionado !== null && (
           <div className="confirmar">
+            <p className="confirmar-escolha">
+              Selecionado: <strong>{etapa.cards[selecionado].nome}</strong>
+            </p>
             <button
               className="btn"
-              disabled={selecionado === null}
               onClick={() =>
                 responder(selecionado, etapa.cards[selecionado].certa)
               }
             >
-              {selecionado === null ? (
-                'Selecione um card'
-              ) : (
-                <>
-                  Confirmar escolha <Icon name="check" />
-                </>
-              )}
+              Confirmar escolha <Icon name="check" />
             </button>
           </div>
         )}
