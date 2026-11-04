@@ -8,6 +8,7 @@ import {
   TOTAL,
   REGRA,
 } from './data.js'
+import { Icon, SunHero, TrophyHero } from './icons.jsx'
 
 function embaralhar(lista) {
   const a = [...lista]
@@ -39,12 +40,13 @@ function Feedback({ certo, texto, extra, ultimo, onNext }) {
   return (
     <div ref={ref} className={`feedback ${certo ? 'ok' : 'erro'}`} role="status">
       <p className="feedback-titulo">
-        {certo ? '✔ Acertou! +1 ponto' : '✘ Errou'}
+        <Icon name={certo ? 'check' : 'x'} size={26} />
+        {certo ? 'Acertou! +1 ponto' : 'Errou'}
       </p>
       <p>{texto}</p>
       {extra && <p className="feedback-extra">{extra}</p>}
       <button className="btn" onClick={onNext}>
-        {ultimo ? 'Ver resultado' : 'Avançar →'}
+        {ultimo ? 'Ver resultado' : 'Avançar'} <Icon name="arrow" />
       </button>
     </div>
   )
@@ -69,6 +71,7 @@ export default function App() {
   const [rodada, setRodada] = useState(novaRodada)
   const [idx, setIdx] = useState(0)
   const [escolha, setEscolha] = useState(null)
+  const [selecionado, setSelecionado] = useState(null)
   const [pontos, setPontos] = useState(0)
   const [hora, setHora] = useState('')
 
@@ -78,6 +81,7 @@ export default function App() {
     setRodada(novaRodada())
     setIdx(0)
     setEscolha(null)
+    setSelecionado(null)
     setPontos(0)
     setHora('')
     setTela('quiz')
@@ -92,6 +96,7 @@ export default function App() {
 
   function avancar() {
     setEscolha(null)
+    setSelecionado(null)
     const total = tela === 'quiz' ? rodada.quiz.length : rodada.mini.length
     if (idx < total - 1) {
       setIdx(idx + 1)
@@ -107,7 +112,7 @@ export default function App() {
   if (tela === 'inicio') {
     return (
       <main className="app">
-        <div className="sol" aria-hidden="true">☀️</div>
+        <SunHero />
         <h1>{TITULO}</h1>
         <p className="sub">{SUBTITULO}</p>
         <p className="desc">{DESCRICAO}</p>
@@ -122,7 +127,7 @@ export default function App() {
             required
           />
           <button className="btn" disabled={!nome.trim()}>
-            Começar ⚡
+            Começar <Icon name="bolt" />
           </button>
         </form>
         <p className="regra">
@@ -145,13 +150,13 @@ export default function App() {
         <div className="opcoes">
           {q.opcoes.map((o, i) => {
             let cls = 'opcao'
-            let marca = ''
+            let marca = null
             if (respondida && o.certa) {
               cls += ' certa'
-              marca = '✔ '
+              marca = <Icon name="check" />
             } else if (respondida && i === escolha) {
               cls += ' errada'
-              marca = '✘ '
+              marca = <Icon name="x" />
             }
             return (
               <button
@@ -187,7 +192,9 @@ export default function App() {
       <main className="app">
         <Progresso rotulo="Etapa" atual={idx + 1} total={rodada.mini.length} />
         <section className="missao">
-          <p className="missao-rotulo">🎯 Missão {idx + 1}</p>
+          <p className="missao-rotulo">
+            <Icon name="target" size={18} /> Missão {idx + 1}
+          </p>
           <p className="missao-objetivo">{etapa.objetivo}</p>
           <p className="missao-req">Requisitos:</p>
           <ul>
@@ -195,26 +202,49 @@ export default function App() {
               <li key={c}>{c}</li>
             ))}
           </ul>
-          {etapa.dado && <p className="missao-dado">ℹ️ {etapa.dado}</p>}
+          {etapa.dado && (
+            <p className="missao-dado">
+              <Icon name="info" size={18} /> {etapa.dado}
+            </p>
+          )}
         </section>
-        <p className="instrucao">👇 Toque no card que cumpre a missão</p>
+        <p className="instrucao">
+          <Icon name="tap" size={28} /> Selecione o card que cumpre a missão
+          e confirme
+        </p>
         <div className="cards">
           {etapa.cards.map((c, i) => {
             let cls = 'card'
             let selo = null
             if (respondida && c.certa) {
               cls += ' certa'
-              selo = '✔ Certa'
+              selo = (
+                <>
+                  <Icon name="check" size={14} /> Certa
+                </>
+              )
             } else if (respondida && i === escolha) {
               cls += ' errada'
-              selo = '✘ Sua escolha'
+              selo = (
+                <>
+                  <Icon name="x" size={14} /> Sua escolha
+                </>
+              )
+            } else if (!respondida && i === selecionado) {
+              cls += ' selecionado'
+              selo = (
+                <>
+                  <Icon name="check" size={14} /> Selecionado
+                </>
+              )
             }
             return (
               <button
                 key={c.nome}
                 className={cls}
-                onClick={() => responder(i, c.certa)}
+                onClick={() => setSelecionado(i)}
                 disabled={respondida}
+                aria-pressed={i === selecionado}
               >
                 {selo && <span className="selo">{selo}</span>}
                 <span className="card-nome">{c.nome}</span>
@@ -230,6 +260,25 @@ export default function App() {
             )
           })}
         </div>
+        {!respondida && (
+          <div className="confirmar">
+            <button
+              className="btn"
+              disabled={selecionado === null}
+              onClick={() =>
+                responder(selecionado, etapa.cards[selecionado].certa)
+              }
+            >
+              {selecionado === null ? (
+                'Selecione um card'
+              ) : (
+                <>
+                  Confirmar escolha <Icon name="check" />
+                </>
+              )}
+            </button>
+          </div>
+        )}
         {respondida && (
           <Feedback
             certo={escolhido.certa}
@@ -249,7 +298,7 @@ export default function App() {
 
   return (
     <main className="app fim">
-      <div className="sol" aria-hidden="true">🏆</div>
+      <TrophyHero />
       <h1>Missão cumprida!</h1>
       <div className="placar">
         <p className="placar-nome">{nome.trim()}</p>
