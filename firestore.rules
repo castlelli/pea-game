@@ -10,7 +10,7 @@ service cloud.firestore {
       allow read: if true;
 
       allow create: if sala.matches('aula|teste[a-z0-9]*')
-        && grupo in ['01', '02', '03', '04', '05', '06', '08']
+        && grupo in ['01', '02', '03', '04', '05', '06', '08', '09', '10']
         && request.resource.data.keys().hasOnly(['nome', 'status', 'pontos', 'inicio'])
         && request.resource.data.nome is string
         && request.resource.data.nome.size() > 0

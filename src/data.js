@@ -247,7 +247,7 @@ export const MINIGAME = [
 ]
 
 // Grupos que podem jogar (o 07 apresenta). Se mudar, atualize também firestore.rules.
-export const GRUPOS = ['01', '02', '03', '04', '05', '06', '08']
+export const GRUPOS = ['01', '02', '03', '04', '05', '06', '08', '09', '10']
 
 // Sala do ranking no Firestore. Use 'teste' (ou 'teste2', 'teste3'...) para testar
 // e troque para 'aula' antes de publicar a versão da aula.
