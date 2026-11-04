@@ -1,0 +1,321 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+html {
+  background: #ff7a59;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #2b1d0e;
+  background: #ff7a59 linear-gradient(180deg, #ffe27a 0%, #ffb35c 45%, #ff7a59 100%);
+  min-height: 100vh;
+  line-height: 1.4;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+  animation: entrar 0.35s ease;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin: 4px 0;
+  text-align: center;
+  color: #7a2e00;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin: 8px 0 16px;
+}
+
+.sol {
+  font-size: 4rem;
+  text-align: center;
+  animation: girar 12s linear infinite;
+}
+
+.sub {
+  text-align: center;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: #7a2e00;
+}
+
+.desc {
+  background: #fff8e6;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 0 #e0892f;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+label {
+  font-weight: 700;
+}
+
+input {
+  font-size: 1.1rem;
+  padding: 14px;
+  border: 3px solid #7a2e00;
+  border-radius: 14px;
+  width: 100%;
+}
+
+.btn {
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background: #7a2e00;
+  color: #fff;
+  box-shadow: 0 5px 0 #3d1700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #3d1700;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+}
+
+.regra {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.progresso {
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.barra {
+  height: 12px;
+  background: #fff8e6;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.barra div {
+  height: 100%;
+  background: #7a2e00;
+  transition: width 0.3s;
+}
+
+.tema {
+  display: inline-block;
+  background: #7a2e00;
+  color: #ffe27a;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 99px;
+  margin: 6px 0 0;
+}
+
+.opcoes,
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.opcao,
+.card {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: #fff8e6;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 0 #e0892f;
+  cursor: pointer;
+  width: 100%;
+}
+
+.opcao {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.opcao:disabled,
+.card:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.certa,
+.certa:disabled {
+  border-color: #1b7a2e;
+  background: #dff7e2;
+  opacity: 1;
+}
+
+.errada,
+.errada:disabled {
+  border-color: #b3261e;
+  background: #fde2df;
+  opacity: 1;
+}
+
+.missao {
+  background: #fff8e6;
+  border-left: 6px solid #7a2e00;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.card {
+  position: relative;
+}
+
+.card-nome {
+  display: block;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  padding-right: 90px;
+}
+
+.selo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: #2b1d0e;
+  color: #fff;
+  border-radius: 99px;
+  padding: 3px 8px;
+}
+
+dl {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px dashed #e8c48f;
+  padding: 2px 0;
+}
+
+dt {
+  color: #6b4a26;
+}
+
+dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.feedback {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 3px solid;
+  background: #fff;
+  animation: entrar 0.3s ease;
+}
+
+.feedback.ok {
+  border-color: #1b7a2e;
+}
+
+.feedback.erro {
+  border-color: #b3261e;
+}
+
+.feedback-titulo {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0 0 6px;
+}
+
+.ok .feedback-titulo {
+  color: #1b7a2e;
+}
+
+.erro .feedback-titulo {
+  color: #b3261e;
+}
+
+.feedback-extra {
+  font-weight: 600;
+}
+
+.placar {
+  background: #fff8e6;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 0 #e0892f;
+  margin: 16px 0;
+}
+
+.placar p {
+  margin: 4px 0;
+}
+
+.placar-nome {
+  font-size: 1.5rem;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.placar-nota {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #7a2e00;
+}
+
+.placar-hora {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
